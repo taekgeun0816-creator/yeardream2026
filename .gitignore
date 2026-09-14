@@ -1,1 +1,19 @@
 **/.idea/
+**/node_modules/
+
+# 파이썬
+**/__pycache__/
+*.pyc
+**/.venv/
+.env
+
+# 실행파일, 압축파일
+*.exe
+*.zip
+
+# 업로드 테스트 결과물
+**/upload/
+
+# 중복 복사본
+yeardream2026-main/
+*복사본*/
