@@ -1,0 +1,108 @@
+### 1. 회원 등록
+POST http://localhost/member/join
+Content-Type: application/json
+
+{
+  "id": "user",
+  "pw": "user@pass",
+  "name": "일반유저",
+  "phone": "010-1234-1234"
+}
+
+### 1. 회원 등록 2
+POST http://localhost/member/join
+Content-Type: application/json
+
+{
+  "id": "admin",
+  "pw": "admin@pass",
+  "name": "관리자",
+  "phone": "010-1334-1234"
+}
+
+### 1. 회원 등록 3
+POST http://localhost/member/join
+Content-Type: application/json
+
+{
+  "id": "yoyoyo",
+  "pw": "year@dream",
+  "name": "일반유저",
+  "phone": "010-7894-1234"
+}
+
+
+
+### 2. 회원 목록
+GET http://localhost/member/list
+
+### 3. 회원 상세보기
+GET http://localhost/member/get/admin
+
+### 4. 회원 수정
+PUT http://localhost/member/update/zer0box
+Content-Type: application/json
+
+{
+  "name": "수정된 이름",
+  "phone": "010-8989-7788"
+}
+
+### 5. 회원 삭제
+DELETE http://localhost/member/delete/zer0box
+
+### 6. 글작성
+POST  http://localhost/board/write
+Content-Type: application/json
+
+{
+  "writer": "JRR tolkin",
+  "title": "반지의 제왕",
+  "content": "마이 프레셔스"
+
+}
+
+### 6. 글작성 2
+POST  http://localhost/board/write
+Content-Type: application/json
+
+{
+  "writer": "제이케이 롤링",
+  "title": "해리포터",
+  "content": "윙가르디움 레비 오우~~쏴"
+
+}
+
+
+### 6. 글작성 3
+POST  http://localhost/board/write
+Content-Type: application/json
+
+{
+  "writer": "김삿갓",
+  "title": "삿갓삿갓",
+  "content": "삿갓삿갓삿갓"
+
+}
+
+### 7. 리스트 불러오기
+GET http://localhost/board/list
+
+
+### 8. 상세보기
+GET http://localhost/board/get/6a94f4eab507297db5f5b6ba
+
+### 9. 수정하기
+PUT http://localhost/board/update/6a94f4eab507297db5f5b6ba
+Content-Type: application/json
+
+{
+    "title":"아즈카반의 죄수",
+    "content":"아바다카다브라"
+}
+
+### 10. 삭제하기
+DELETE http://localhost/board/delete/6a94f4eab507297db5f5b6ba
+
+### 11. 없는 아이디 호출
+GET http://localhost/member/get/asdf
