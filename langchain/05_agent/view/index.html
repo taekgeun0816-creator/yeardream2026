@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form id = "calcform" action="/calc" method="get">
+        <input type ='text' name='val1' value=""/>
+        <select name='oper'>
+            <option value='+'>+</option>
+            <option value='-'>-</option>
+            <option value='*'>*</option>
+            <option value='/'>/</option>
+        </select>
+         <input type="submit" value="계산"/>
+        <input type ='text' name='val2' value=""/>
+        <div id="result"></div>
+    </form>
+
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    const form = document.getElementById('calcform');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fd = new FormData(form);
+        const info = Object.fromEntries(fd)
+        //console.log(info);
+        const {data} = await axios({
+            method: 'post',
+            url: '/calc',
+            data: info
+        });
+        console.log(data)
+
+    })
+
+</script>
+
+</html>
