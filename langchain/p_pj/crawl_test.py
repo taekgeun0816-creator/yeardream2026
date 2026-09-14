@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 
 url = "https://www.dangjin.go.kr/cop/bbs/BBSMSTR_000000000013/selectBoardList.do"
-#params = {"searchCnd": "0", "searchWrd":"청년"}
+
 
 headers = {"User-Agent": "Mozilla/5.0"}
 
@@ -37,6 +37,7 @@ def search(keyword:str) -> list:
         })
 
     return result
+
 keyword = "청년"
 result = search(keyword)
 

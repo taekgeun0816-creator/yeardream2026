@@ -4,7 +4,7 @@ import time
 from langchain.agents import create_agent
 # from langchain_core.globals import set_debug
 from langchain_ollama import ChatOllama
-from tools import get_today
+from tools import get_today,get_city_info,search_notices
 
 logging.basicConfig(level=logging.INFO)
 #set_debug(True)
@@ -24,7 +24,7 @@ sys_prompt = """
 모르는 내용은 지어내지 말고 '정확한 정보는 당진시청(www.dangjin.go.kr)에서 확인해 주세요'라고 안내하세요.
 모든 답은 3문장 이내로 줄여서 답하세요. 
 """
-tools = [get_today,]
+tools = [get_today, get_city_info, search_notices]
 agent = create_agent(llm, tools=tools, system_prompt=sys_prompt)
 
 def ask(question:str) -> str:
@@ -39,7 +39,7 @@ def ask(question:str) -> str:
 
 if __name__ == "__main__":
     start = time.time()
-    answer = ask("너에 대해 알려줘")
+    answer = ask("당진 청년 사업 최신꺼 있나?")
 
     print("응답", answer)
     print(f'걸린시간 :{time.time() - start:.1f}초')
