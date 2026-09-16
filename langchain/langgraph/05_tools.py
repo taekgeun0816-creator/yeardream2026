@@ -1,4 +1,4 @@
-from idlelib.run import eof
+
 from typing import TypedDict, Annotated, Dict
 
 from langchain_core.messages import BaseMessage, HumanMessage, ToolMessage
@@ -66,8 +66,8 @@ def tool_node(state:AgentState) -> Dict:
     return {'messages': msg_list}
 
 def should_continue(state:AgentState) -> str:
-    lasg_msg = state['messages'][-1]
-    if len(lasg_msg.tool_calls):
+    last_msg = state['messages'][-1]
+    if len(last_msg.tool_calls):
         return "call_tool"
     else:
         return "go_end"
@@ -94,7 +94,8 @@ wf.add_edge('tool','agent')
 # 8. 컴파일
 app = wf.compile()
 # 9. 실행
-for node in app.stream({'messages':[HumanMessage(content="256 곱하기 4가 무엇인지 계산해 주세요")]}, stream_mode='updeates'):
+query = input("아무거나 질문하세요\n")
+for node in app.stream({'messages':[HumanMessage(content=query)]}, stream_mode='updeates'):
     for key, value in node.items():
         print(f'[{key}] = {value}]')
 
