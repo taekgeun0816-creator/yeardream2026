@@ -1,3 +1,4 @@
+from idlelib.run import eof
 from typing import TypedDict, Annotated, Dict
 
 from langchain_core.messages import BaseMessage, HumanMessage, ToolMessage
@@ -64,6 +65,13 @@ def tool_node(state:AgentState) -> Dict:
 
     return {'messages': msg_list}
 
+def should_continue(state:AgentState) -> str:
+    lasg_msg = state['messages'][-1]
+    if len(lasg_msg.tool_calls):
+        return "call_tool"
+    else:
+        return "go_end"
+
 # 6. 노드 등록
 
 wf = StateGraph(AgentState)
@@ -72,8 +80,15 @@ wf.add_node("tool",tool_node)
 # 7. 엣지 조립
 
 wf.set_entry_point("agent")
-wf.add_edge("agent","tool")
-wf.add_edge("tool",END)
+#wf.add_edge("agent","tool")
+#wf.add_edge("tool",END)
+wf.add_conditional_edges(
+    "agent",
+    should_continue,{
+        "call_tool":"tool",
+        "go_end":END
+})
+wf.add_edge('tool','agent')
 
 
 # 8. 컴파일
