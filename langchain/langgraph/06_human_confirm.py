@@ -57,8 +57,11 @@ app = wf.compile(checkpointer=memory, interrupt_before=['send'])
 config = {'configurable':{'thread_id':uuid.uuid4()}}
 result = app.invoke({"title":"전사 야우회 참여 공지 메일"}, config)
 
+#메모리 확인을 위한 코드(필수는 아님)
 state_snapshot = app.get_state(config)
-print(state_snapshot)
+#print(state_snapshot)
+print(state_snapshot.values)
+print(state_snapshot.next)
 
 
 yn = input('작성된 초안을 승인하고 발송 하시겠습니까?')
