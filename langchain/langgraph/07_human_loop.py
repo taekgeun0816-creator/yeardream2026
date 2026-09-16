@@ -59,7 +59,7 @@ wf.add_conditional_edges(
 )
 wf.add_edge('send',END)
 # 6. 컴파일
-app = wf.compile(checkpointer=MemorySaver(), interrupt_before=['send'])
+app = wf.compile(checkpointer=MemorySaver(), interrupt_after=['writer'])
 # 7. 실행
 config={'configurable':{'thread_id': uuid.uuid4()}}
 title = input('작성하고 싶은 메일의 제목을 정하세요')
