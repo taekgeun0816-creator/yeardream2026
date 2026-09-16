@@ -44,11 +44,11 @@ def router(state: TaskState) -> str:
 # 4. 저장소/노드 등록
 wf = StateGraph(TaskState)
 wf.add_node('writer',write_mail_node)
-wf.add_node('sned',send_mail_node)
+wf.add_node('send',send_mail_node)
 
 # 5. 엣지조립
 wf.set_entry_point('writer')
-# wf.add_edge('writer','sned')
+# wf.add_edge('writer','send')
 wf.add_conditional_edges(
     'writer',
     router,
@@ -57,7 +57,7 @@ wf.add_conditional_edges(
         "go_write":"writer"
     }
 )
-wf.add_edge('sned',END)
+wf.add_edge('send',END)
 # 6. 컴파일
 app = wf.compile(checkpointer=MemorySaver(), interrupt_before=['send'])
 # 7. 실행
