@@ -41,20 +41,36 @@ def agent_node(state:AgentState) -> Dict:
     print(resp)
     return {'messages': [resp]}
 
-
+def tool_node(state:AgentState) -> Dict:
+    """LLM 의 요청에 따라서 필요한 툴을 실행하는 노드"""
+    last_msg =state['messages'][-1]
+    for call in last_msg.too_calls:
+        name = call['name']
+        args = call['args']
+        call_id = call['id']
+        print(f'id: {call_id} 실행')
+        print(f'{name}({args}')
+    return {'messages': []}
 # 6. 노드 등록
 
 wf = StateGraph(AgentState)
 wf.add_node("agent",agent_node)
-
+wf.add_node("tool",tool_node)
 # 7. 엣지 조립
 
 wf.set_entry_point("agent")
-wf.add_edge("agent",END)
+wf.add_edge("agent","tool")
+wf.add_edge("tool",END)
 
 
 # 8. 컴파일
 app = wf.compile()
 # 9. 실행
-response = app.invoke({'messages':[HumanMessage(content="256 곱하기 4가 무엇인지 계산해 주세요")]})
-print(response)
+resp = app.invoke({'messages':[HumanMessage(content="256 곱하기 4가 무엇인지 계산해 주세요")]})
+"""
+HumanMessage    : 사용자가 보내는 메시지(content)
+AIMessage       : LLM 모델이 생성한 메시지(content,tool_calls)
+ToolMessage     : Tool 이 수행후 반환하는 메시지(content,tool_call_id)
+"""
+print(f'최종 : {resp}')
+
