@@ -35,7 +35,7 @@ def send_mail_node(state:EmailState) -> None:
     """메일을 발송해 주는 노드"""
     print("메일이 발송 되었습니다")
     print("[발송된 내용]")
-    print(state.title_detail)
+    print(state.email_detail)
 
 # 4. 저장소,노드 등록
 wf = StateGraph(EmailState)
@@ -56,6 +56,11 @@ app = wf.compile(checkpointer=memory, interrupt_before=['send'])
 #현재이것을 실행하는 thread id를 지정 (어떤 프로세스인지 식별하기 위해)
 config = {'configurable':{'thread_id':uuid.uuid4()}}
 result = app.invoke({"title":"전사 야우회 참여 공지 메일"}, config)
+
+state_snapshot = app.get_state(config)
+print(state_snapshot)
+
+
 yn = input('작성된 초안을 승인하고 발송 하시겠습니까?')
 if yn.lower().strip() == 'y':
     print('승인 완료 발송 시작')
