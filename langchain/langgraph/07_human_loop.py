@@ -52,4 +52,4 @@ wf.add_edge('sned',END)
 app = wf.compile()
 # 7. 실행
 title = input('작성하고 싶은 메일의 제목을 정하세요')
-app.invoke(title)
+app.invoke({"title":title})
