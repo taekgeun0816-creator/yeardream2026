@@ -1,3 +1,5 @@
+
+from langgraph.checkpoint.memory import MemorySaver
 from langgraph.constants import END
 from langchain_ollama import ChatOllama
 from langgraph.graph import StateGraph
@@ -46,10 +48,34 @@ wf.add_node('sned',send_mail_node)
 
 # 5. 엣지조립
 wf.set_entry_point('writer')
-wf.add_edge('writer','sned')
+# wf.add_edge('writer','sned')
+wf.add_conditional_edges(
+    'writer',
+    router,
+    {
+        "go_send":"send",
+        "go_write":"writer"
+    }
+)
 wf.add_edge('sned',END)
 # 6. 컴파일
-app = wf.compile()
+app = wf.compile(checkpointer=MemorySaver(), interrupt_before=['send'])
 # 7. 실행
+config={'configurable':{'thread_id': uuid.uuid4()}}
 title = input('작성하고 싶은 메일의 제목을 정하세요')
-app.invoke({"title":title})
+app.invoke({"title":title},config)
+
+snap_shot=app.get_state(config)
+print(snap_shot.values)
+print(snap_shot.next)
+
+yn = input('작성된 초안을 발송 하시겠습니까')
+if yn.strip().upper() == 'Y':
+    print('승인완료')
+    # writer node 에서 approval을 true 로 변경
+    app.update_state(config,{"approval":True}, as_node="writer")
+    app.invoke(None, config)
+else:
+    print('발송 거부, 이메일 재작성')
+    app.update_state(config,{"approval":False}, as_node="writer")
+    app.invoke(None, config)
