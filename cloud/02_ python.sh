@@ -43,6 +43,20 @@ tail -f uvicorn.log
 cat uvicorn.log
 vim uviconr.log
 
+# 5. 끄기
+# 8000번 누가 사용하고 있는지?
+# lsof : list open file -> 리스트에 있는거 다 열어
+# -i : Internet
+# :8000 -> :8000 이라는 문자가 나오는 거  
+sudo lsof -i :8000
+
+# 해당 프로세스 종료
+kill -9 [pid]
+
 
 # 가상환경 종료
 deactivate
+
+# main.py 파일 삭제
+rm -rf main.py
+rm -rf [파일명]
