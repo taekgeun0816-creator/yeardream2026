@@ -35,3 +35,9 @@ uv pip install -r requirements.txt
 
 서버시작
 uviconr main:app --host=0.0.0.0 port=8000
+
+#종료
+#^ + c
+deactivate #가상화종료
+cd ../       # 한 단계 위 폴더로 이동
+rm -rf app # app 폴더 삭제
