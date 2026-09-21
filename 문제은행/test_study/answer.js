@@ -147,3 +147,103 @@ run()
 
 //[문제4]
 // 카테고리가 'electronics' 또는 'books'인 상품($in)을 조회해 평점 내림차순 정렬 후 상위 2개(slice)만 추출하세요.
+
+async function run() {
+    const p1 = await main({
+        category: {$in: ['electronics', 'books']}
+    })
+    const result = p1.sort((a, b) => b.stock - a.stock).slice(0, 2)
+    console.log(result)
+}
+run();
+
+//[문제5]
+// filter = { published: true }에 가격이 20000원 이상($gte)인 조건을 추가하여 조회 후,
+// 재고(stock) 오름차순 정렬하고 { id, name, price } 객체 배열로 변환하세요.
+
+async function run (){
+    const criteria = {
+        published: true,
+        price: {$gte:20000}
+    }
+    const data = await main(criteria)
+    const result = data
+        .sort((a,b) =>a.stock-b.stock)
+        .map((x) => ({id: x.id, name: x.name, price: x.price}))
+
+    console.log(result)
+}
+run()
+
+//[문제6]
+// 전체 상품을 재고(stock) 내림차순 정렬 후 "[상품명] (재고: [stock]개)" 문자열 배열로 변환하세요.
+async function run(){
+    const data = await main()
+    const result = data
+        .sort((a,b)=> b.stock -a.stock)
+        .map((x) => `[${x.name} (재고: [${x.stock}]개)]` )
+    console.log(result)
+
+}
+run()
+
+//[문제7]
+// 평점이 4.5 이상인 상품을 가격 오름차순 정렬 후 상품명만 추출하세요.
+
+async function run(){
+    const criteria = {
+        rating: {$gte:4.5}
+    }
+    const data = await main(criteria)
+    const result = data.sort((a,b) => a.price - b.price).map((x) => x.name)
+    console.log(result)
+}
+run()
+
+//[문제8]
+//재고가 0 초과($gt)인 상품을 평점 내림차순 정렬 후 "[상품명] - ★[rating]" 문자열 배열로 변환하세요.
+
+async function run(){
+    const criteria ={
+        stock:{$gt:0}
+    }
+    const data = main(criteria)
+    const result = data
+        .sort((a,b)=>b.rating - a.rating)
+        .map((x)=>`${x.name} - ★[${x.rating}]`)
+    console.log(result)
+}
+
+//[문제9]
+//filter = { category: 'electronics' }로 조회 후 가격 내림차순 정렬하여 { name, price } 객체 배열로 변환하세요.
+
+async function run(){
+    const criteria = {
+        category: 'electronics'
+    }
+    const data = await main(criteria);
+    const result = data.sort((a,b) => b,price - a.price).map((x)=> x.name )
+    console.log(result)
+}
+
+//[문제10]
+// 가격이 100000원 이하인 상품을 재고 내림차순 정렬 후 상품명만 추출하세요.
+
+async function run (){
+    const data = await main({
+        price: {$lte: 100000}
+    })
+    const result = data.sort((a,b)=> b.stock - a.stock).map(({name})=> name)
+   console.log(result)
+}
+
+//[문제11]
+//published: true 상품을 평점 내림차순 정렬 후 "[상품명] ([category])" 문자열 배열로 변환하세요.
+
+async function run(){
+    const data = main({
+        published: true
+    })
+    const result = data.sort((a,b)=> b.rating - a.rating).map(({name, category}) => `${name} (${category})`)
+    console.log(result)
+}

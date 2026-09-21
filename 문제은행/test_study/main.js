@@ -11,18 +11,15 @@ async function main(filter){
     }
 }
 
+async function run(){
+    console.log( main({
+        published: true
+    }))
 
-async function run() {
+    console.log(await main({
+        published: true
+    }))
 
-    let product = {
-        category: {$in: ['electronics', 'books']}
-    }
-    let p1 = await main(product);
-
-    let result = p1.sort((a,b) => b.rating - a.rating).slice(0,2)
-    console.log('-----답 목록-----')
-    console.log(result)
 
 }
-run()
-
+run(       
