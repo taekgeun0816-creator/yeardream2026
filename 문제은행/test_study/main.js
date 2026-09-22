@@ -1,25 +1,13 @@
 const {get_products} = require('./promise');
 
 
-async function main(filter){
-    try{
 
-        const data = await get_products(filter);
-        return data;
-    }catch(e){
-        console.error(`ERROR: ${e.message}`)
-    }
+
+
+async function main(){
+    const data = await get_products()
+    const result = data.find((p) => p.rating >= 4.5 && p.price <= 300000)
+    console.log(result)
 }
 
-async function run(){
-    console.log( main({
-        published: true
-    }))
-
-    console.log(await main({
-        published: true
-    }))
-
-
-}
-run(       
+main()

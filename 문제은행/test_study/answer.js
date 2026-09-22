@@ -1,4 +1,6 @@
 // 문제 1번
+import {get_products} from "./promise";
+
 main({price: {$gt:100000}});
 
 //문제 2번
@@ -247,3 +249,227 @@ async function run(){
     const result = data.sort((a,b)=> b.rating - a.rating).map(({name, category}) => `${name} (${category})`)
     console.log(result)
 }
+
+
+//[문제12]
+//재고가 10개 이하인 상품을 가격 오름차순 정렬 후 상위 3개 상품만 추출하세요.
+async function run(){
+    const criteria = {
+        stock: {$lte:10}
+    }
+    const data = main(criteria)
+    const result = data.sort((a,b)=>a.price-b.price).slice(0,3)
+    console.log(result)
+}
+
+//[문제 13]
+//filter = { published: true }에 재고가 0 보다 큰($gt)조건을 추가해 조회 후
+// 가격 내림차순 정렬하여 "[상품명]: [가격]원" 배열로 변환하세요.
+
+async function run(){
+    const criteria = {
+        published: true,
+        stock:{$gt:0}
+    }
+    const data = await main(criteria)
+    const result = [...data]
+        .sort((a,b)=> b.price - a.price)
+        .map(({name, price}) => `${name}: ${price}원`)
+    console.log(result)
+}
+
+//[문제14]
+// 카테고리가 'books'인 상품을 평점 내림차순 정렬 후 { title: name, score: rating } 형태의 객체 배열로 변환하세요.
+
+async function run() {
+    const data = await main({ category: 'books' })
+    const result = [...data]
+        .sort((a, b) => b.rating - a.rating)
+        .map(({ name, rating }) => ({ title: name, score: rating }))
+    console.log(result)
+}
+
+//[문제15]
+//filter 변수에 평점이4.0이상인 조건을 추가해 조회 후 재고 오름차순 정렬하여 상품명만 추출하세요.
+async function run (){
+    const data = await main({ rating : {$gte:4.0}})
+    const result = [...data]
+        .sort((a,b)=>a.stock - b.stock)
+        .map(({name}) => name)
+    console.log(result)
+}
+
+//[문제 16]
+// 가격이 50000원 초과인 상품을 평점 내림차순 정렬 후 "[상품명] - [가격]원 (★[rating])" 배열로 변환하세요.
+
+async function run (){
+    const data = await main({price: {$gt:5000}})
+    const result = [...data]
+        .sort((a,b)=> b.rating - a.rating)
+        .map(({name, price, rating}) => `${name} - ${price}원 (★${rating})`)
+    console.log(result)
+}
+
+//[문제 17]
+//filter = { published: true }에 카테고리가 'office'이거나'books'인 조건을 추가해 조회 후
+//가격 오름차순 정렬하여 상품명만 추출하세요.
+
+
+// 문제18]
+// 전체 상품을 평점 오름차순 정렬 후 하위 3개 상품을 추출하여 "[상품명]: [rating]점" 배열로 변환하세요.
+async function main (filter){
+    try{
+        const data = await get_products(filter)
+        const result = data.sort((a,b)=>a.rating-b.rating).map(({name, rating}) => `${name}: ${rating}점`).slice(0,3)
+        console.log(result)
+    }catch(err){
+        console.log(err)
+    }
+}
+
+//[문제19]
+// 가격이 30,000 이상, 250,000이하인 상품을 조회 후 평점 내림차순 정렬하여 { id, name } 객체 배열로 변환하세요.
+
+
+async function main (filter){
+    try{
+        const data = await get_products(filter)
+        const result = data.sort((a,b) => b.rating-a.rating).map(({id, name}) => ({id:id, name:name}))
+        console.log(result)
+    }catch(err){
+        console.log(err)
+    }
+}
+
+const filter = {
+    price: {$gte:30000, $lte: 25000}
+}
+main(filter)
+//[문제20]
+//재고가 0인 품절 상품을 가격 내림차순 정렬 후 "[상품명] (품절)" 문자열 배열로 변환하세요.
+
+async function main(filter){
+    const data = await get_products(filter)
+    const result = data.sort((a,b)=>b.price-a.price).map(({name,}) => `${name} 품절`)
+}
+
+
+
+const filter = {
+    stock: 0
+}
+main(filter)
+
+//문제은행 4
+
+// [문제 1]
+//await get_products()로 전체 상품 조회 후 find()로 id가 3인 상품의 이름과 가격을 출력하세요.
+
+async function main (){
+   try {
+       const data = await get_products()
+       const result = data.find((p) => p.id === 3)
+       console.log(result)
+   }catch(err){
+       console.log(err)
+   }
+}
+
+main()
+
+//[문제 2]
+
+//전체 상품 중 카테고리가 'electronics'이고 재고가 0 초과인 첫 번째 상품을 find()로 찾아 출력하세요.
+
+async function main(){
+    try{
+        const data = await get_products()
+        const result = data.find((p)=> p.category === "electronics" && p.stock > 0)
+        console.log(result)
+    }catch(err){
+        console.log(err)
+    }
+}
+
+//[문제 3]
+//전체 상품 중 name이 '스마트 워치'인 상품을 find()로 찾은 뒤 published가 false이면 "비공개 상품", true이면 가격을 출력하세요.
+
+async function main(){
+    try{
+        const data = await get_products()
+        const result = data.find((p) => p.name ==='스마트 워치')
+        if (result.published){
+            console.log(result.price)
+        }
+        else{
+            console.log("비공개 상품")
+        }
+
+    }catch(err){
+        console.log(err)
+    }
+}
+main()
+
+//문제 4번
+//전체 배열과 조건 객체 { category: 'books', price: 32000 }를 받아 find()로 단일 상품을 반환하는 helper 함수 findOne(products, target)를 작성하고 호출하세요.
+
+
+function findOne(products, target){
+    return products.find((p) => Object.entries(target).every(([key,value]) => p[key] === value))
+}
+
+async function main (){
+     const data = await get_products()
+    const result = data.findOne(data, {category: 'books', price: 32000})
+    console.log(result)
+}
+
+
+
+//문제 5번
+async function main(){
+    const data = await get_products()
+    const result = data.find((p) => p.rating >= 4.5 && p.price <= 300000)
+    console.log(result)
+}
+
+//문제은행 5번 스키마
+
+const mongoose =rquire('mongoose');
+
+const UserSchema = new mongoose.Schema({
+    emil:{
+
+    },
+    password:{
+
+    },
+    age:{
+
+    },
+    role:{
+
+    }
+
+},{
+timestamps: true
+})
+
+
+const mongoose = require('mongoose');
+
+const ExampleSchema = new mongoose.Schema({
+    email:    { type: String,  required: true, unique: true, lowercase: true },
+    code:     { type: String,  required: true, unique: true, uppercase: true },
+    title:    { type: String,  required: true, trim: true },
+    rating:   { type: Number,  required: true, min: 1, max: 5 },
+    views:    { type: Number,  default: 0 },
+    isActive: { type: Boolean, default: true },
+    status:   { type: String,  default: 'pending', enum: ['pending', 'paid'] },
+    tags:     [String]
+}, {
+    timestamps: true
+});
+
+module.exports = mongoose.model('Example', ExampleSchema);
