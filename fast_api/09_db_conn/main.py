@@ -1,0 +1,36 @@
+from socket import create_server
+
+from fastapi import FastAPI
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+app = FastAPI()
+
+
+@app.get("/")
+def main():
+    return {"message": "메인 페이지 접근"}
+
+@app.get("/db/conn")
+def db_conn():
+    msg = 'DB 접속에 실패 했습니다.'
+    conn = None
+    try:
+        # 1. 접속정보(위치, 아이디, 비밀번호, 사용할 database)
+        url ='mysql+pymysql://web_user:user@pass@13.239.98.173:3306/mydb'
+
+        # 2. 엔진생성(매니저에게 금고를 달라고 요청)
+        engine = create_engine(url)
+
+        # 3. 세선(커넥션) 생성 (매니저가 금고를 가져옴)
+        session = sessionmaker(bind=engine)
+        conn = session()
+        msg = 'DB 접속에 성공했습니다.'
+    except Exception as e:
+        print(e)
+
+    finally:
+        # 4. 다 사용 후 반납(매니저에게 개인금고를 반납)
+        if conn is not None:
+            conn.close()
+    return {"msg": msg}
